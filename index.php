@@ -25,10 +25,10 @@ if($function=="list")
     }
     
     usort($post_list,function($a,$b){
-        if ($a == $b) {
+        if ($a->total_number_of_comments == $b->total_number_of_comments) {
             return 0;
         }
-        return ($a > $b) ? -1 : 1;
+        return ($a->total_number_of_comments > $b->total_number_of_comments) ? -1 : 1;
     });
 
     echo json_encode($post_list);
