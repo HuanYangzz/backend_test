@@ -15,6 +15,8 @@ if($function=="list")
     $comment_list = file_get_contents($comment_url);
     $comment_list = json_decode($comment_list);
     
+    $result_list = [];
+    
     foreach($post_list as $post)
     {
         $post_comment = array_filter($comment_list,function($item) use($post){
@@ -22,16 +24,24 @@ if($function=="list")
         });
     
         $post->total_number_of_comments = sizeof($post_comment);
+
+        $tmp = new \StdClass();
+        $tmp->post_id = $post->id;
+        $tmp->post_title = $post->title;
+        $tmp->post_body = $post->body;
+        $tmp->total_number_of_comments = $post->total_number_of_comments;
+
+        array_push($result_list,$tmp);
     }
     
-    usort($post_list,function($a,$b){
+    usort($result_list,function($a,$b){
         if ($a->total_number_of_comments == $b->total_number_of_comments) {
             return 0;
         }
         return ($a->total_number_of_comments > $b->total_number_of_comments) ? -1 : 1;
     });
 
-    echo json_encode($post_list);
+    echo json_encode($result_list);
     return;
 }
 else if($function=="search")
